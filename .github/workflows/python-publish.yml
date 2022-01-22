@@ -32,7 +32,7 @@ jobs:
         pip install build
 
     - run: black --check
-    - run: flake8 markata
+    - run: flake8 .
 
     - name: Build package
       run: python -m build
