@@ -11,7 +11,7 @@ name: Upload Python Package
 on:
   push:
     branches:
-      - main
+      - '*'
 
 jobs:
   deploy:
@@ -40,6 +40,7 @@ jobs:
     - run: bumpversion patch
 
     - name: push version change
+      if: github.ref == 'refs/heads/main'
       run: |
 
         git config --global user.name ${GITHUB_ACTOR}
@@ -51,6 +52,7 @@ jobs:
         git push github HEAD:${GITHUB_REF}
 
     # - name: Publish package
+    #   if: github.ref == 'refs/heads/main'
     #   uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
     #   with:
     #     user: __token__
