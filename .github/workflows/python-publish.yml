@@ -11,7 +11,7 @@ name: Upload Python Package
 on:
   push:
     branches:
-      - main
+      - '*'
 
 jobs:
   deploy:
@@ -35,22 +35,22 @@ jobs:
     - run: flake8 .
 
     - name: Build package
-      run: python -m build
+      run: python setup.py sdist bdist_wheel
 
-    - run: bumpversion patch
 
-    - name: push version change
+    - name: bumpversion
+      if: github.ref == 'refs/heads/main'
       run: |
 
         git config --global user.name ${GITHUB_ACTOR}
         git config --global user.email ${GITHUB_ACTOR}@markata.dev
-        git subtree push --prefix my-docs origin gh-pages
-
+        bumpversion patch
         git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
         git pull github ${GITHUB_REF} --ff-only
         git push github HEAD:${GITHUB_REF}
 
     # - name: Publish package
+    #   if: github.ref == 'refs/heads/main'
     #   uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
     #   with:
     #     user: __token__
